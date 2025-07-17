@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-agent-service
+  namespace: default
+  labels:
+    app: ai-agent-service
+    version: v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ai-agent-service
+  template:
+    metadata:
+      labels:
+        app: ai-agent-service
+        version: v1
+    spec:
+      containers:
+      - name: ai-agent-service
+        image: ai-agent-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3003
+          name: http
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "3003"
+        - name: COZE_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: ai-agent-secrets
+              key: coze-api-token
+        - name: COZE_API_BASE_URL
+          value: "https://api.coze.cn"
+        - name: COZE_BOT_ID
+          valueFrom:
+            secretKeyRef:
+              name: ai-agent-secrets
+              key: coze-bot-id
+        - name: REQUEST_TIMEOUT
+          value: "30000"
+        - name: LOG_LEVEL
+          value: "info"
+        - name: CORS_ORIGIN
+          value: "*"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3003
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3003
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-agent-service
+  namespace: default
+  labels:
+    app: ai-agent-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3003
+    targetPort: 3003
+    protocol: TCP
+    name: http
+  selector:
+    app: ai-agent-service
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ai-agent-secrets
+  namespace: default
+type: Opaque
+data:
+  # Base64 encoded values - replace with actual values
+  # echo -n "your-coze-api-token" | base64
+  coze-api-token: eW91ci1jb3plLWFwaS10b2tlbg==
+  # echo -n "your-bot-id" | base64
+  coze-bot-id: eW91ci1ib3QtaWQ=
