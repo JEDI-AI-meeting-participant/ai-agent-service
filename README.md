@@ -1,21 +1,21 @@
 # AI Agent Service
 
-智能体服务，负责处理 Coze API 调用。
+AI Agent service responsible for handling Coze API calls.
 
-## 功能特性
+## Features
 
-- **智能体调用**: 支持 Coze API v3 智能体调用
-- **流式响应**: 处理 SSE 格式的流式响应
+- **Agent Invocation**: Support for Coze API v3 agent calls
+- **Streaming Response**: Handle SSE format streaming responses
 
 ## API 接口
 
-### 1. 智能体聊天
+### 1. Agent Chat
 
 **POST** `/api/agent/chat`
 
-调用 Coze 智能体进行对话。
+Invoke Coze agent for conversation.
 
-#### 请求参数
+#### Request Parameters
 
 ```json
 {
@@ -29,7 +29,7 @@
 }
 ```
 
-#### 响应格式
+#### Response Format
 
 ```json
 {
@@ -46,11 +46,11 @@
 }
 ```
 
-### 3. 健康检查
+### 3. Health Check
 
 **GET** `/health`
 
-获取服务健康状态。
+Get service health status.
 
 ```json
 {
@@ -62,74 +62,74 @@
 }
 ```
 
-## 快速开始
+## Quick Start
 
-### 1. 安装依赖
+### 1. Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 2. 配置环境变量
+### 2. Configure Environment Variables
 
 ```bash
 cp .env.example .env
-# 编辑 .env 文件，配置必要的参数
+# Edit .env file to configure necessary parameters
 ```
 
-### 3. 启动服务
+### 3. Start Service
 
 ```bash
-# 开发模式
+# Development mode
 npm run dev
 
-# 生产模式
+# Production mode
 npm start
 ```
 
-## 部署
+## Deployment
 
-### Docker 部署
+### Docker Deployment
 
 ```bash
-# 构建镜像
+# Build image
 docker build -t ai-agent-service .
 
-# 运行容器
+# Run container
 docker run -p 3003:3003 \
   -e COZE_API_TOKEN=your_token \
   -e COZE_BOT_ID=your_bot_id \
   ai-agent-service
 ```
 
-### Kubernetes 部署
+### Kubernetes Deployment
 
-参考 `k8s/` 目录下的配置文件。
+Refer to configuration files in the `k8s/` directory.
 
-## 环境变量
+## Environment Variables
 
-| 变量名 | 描述 | 默认值 |
-|--------|------|--------|
-| `PORT` | 服务端口 | `3003` |
-| `NODE_ENV` | 运行环境 | `development` |
-| `COZE_API_TOKEN` | Coze API 令牌 | - |
-| `COZE_API_BASE_URL` | Coze API 基础URL | `https://api.coze.cn` |
-| `COZE_BOT_ID` | 智能体ID | - |
-| `REQUEST_TIMEOUT` | 请求超时时间 | `30000` |
+| Variable | Description | Default Value |
+|----------|-------------|---------------|
+| `PORT` | Service port | `3003` |
+| `NODE_ENV` | Runtime environment | `development` |
+| `COZE_API_TOKEN` | Coze API token | - |
+| `COZE_API_BASE_URL` | Coze API base URL | `https://api.coze.cn` |
+| `COZE_BOT_ID` | Agent ID | - |
+| `REQUEST_TIMEOUT` | Request timeout | `30000` |
 
-## 开发
+## Development
 
-### 项目结构
+### Project Structure
 
 ```
 ai-agent-service/
 ├── src/
-│   ├── index.js          # 服务入口
+│   ├── index.js          # Service entry point
 │   ├── routes/
-│   │   ├── agent.js      # 智能体路由
-│   │   └── health.js     # 健康检查路由
+│   │   ├── agent.js      # Agent routes
+│   │   └── health.js     # Health check routes
 │   └── services/
-│       └── AgentService.js # 智能体服务类
+│       └── AgentService.js # Agent service class
 ├── package.json
 ├── .env.example
 └── README.md
